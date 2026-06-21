@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const database_1 = require("./config/database");
 const users_1 = __importDefault(require("./routes/users"));
 const teams_1 = __importDefault(require("./routes/teams"));
 const activities_1 = __importDefault(require("./routes/activities"));
@@ -12,7 +12,6 @@ const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
 const workouts_1 = __importDefault(require("./routes/workouts"));
 const app = (0, express_1.default)();
 const PORT = 8000;
-const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
 // Middleware
 app.use(express_1.default.json());
 // CORS headers for Codespaces and local development
@@ -23,9 +22,11 @@ app.use((req, res, next) => {
     next();
 });
 // MongoDB connection
-mongoose_1.default.connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+(0, database_1.connectDatabase)()
+    .catch(err => {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+});
 // API URL for Codespaces-aware configuration
 const getApiUrl = () => {
     if (process.env.CODESPACE_NAME) {

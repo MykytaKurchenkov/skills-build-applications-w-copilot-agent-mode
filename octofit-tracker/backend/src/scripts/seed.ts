@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { connectDatabase, disconnectDatabase } from '../config/database';
 import { User } from '../models/User';
 import { Team } from '../models/Team';
 import { Activity } from '../models/Activity';
@@ -9,13 +10,10 @@ import { Workout } from '../models/Workout';
  * Seed the octofit_db database with test data
  */
 
-const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
-
 async function seedDatabase() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(MONGODB_URI);
-    console.log('Connected to MongoDB');
+    await connectDatabase();
 
     // Clear existing data
     console.log('Clearing existing data...');
@@ -280,8 +278,7 @@ async function seedDatabase() {
     console.error('Error seeding database:', error);
     process.exit(1);
   } finally {
-    await mongoose.connection.close();
-    console.log('\nDatabase connection closed');
+    await disconnectDatabase();
     process.exit(0);
   }
 }

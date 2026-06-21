@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import { connectDatabase } from './config/database';
 import usersRouter from './routes/users';
 import teamsRouter from './routes/teams';
 import activitiesRouter from './routes/activities';
@@ -8,7 +8,6 @@ import workoutsRouter from './routes/workouts';
 
 const app = express();
 const PORT = 8000;
-const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
 
 // Middleware
 app.use(express.json());
@@ -22,9 +21,11 @@ app.use((req, res, next) => {
 });
 
 // MongoDB connection
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+connectDatabase()
+  .catch(err => {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+  });
 
 // API URL for Codespaces-aware configuration
 const getApiUrl = (): string => {

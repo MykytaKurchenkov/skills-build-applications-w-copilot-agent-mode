@@ -1,5 +1,6 @@
 import express from 'express';
 import { connectDatabase } from './config/database';
+import { getApiUrl, getEnvironment, getServerConfig } from './config/api';
 import usersRouter from './routes/users';
 import teamsRouter from './routes/teams';
 import activitiesRouter from './routes/activities';
@@ -7,7 +8,7 @@ import leaderboardRouter from './routes/leaderboard';
 import workoutsRouter from './routes/workouts';
 
 const app = express();
-const PORT = 8000;
+const serverConfig = getServerConfig();
 
 // Middleware
 app.use(express.json());
@@ -27,20 +28,12 @@ connectDatabase()
     process.exit(1);
   });
 
-// API URL for Codespaces-aware configuration
-const getApiUrl = (): string => {
-  if (process.env.CODESPACE_NAME) {
-    return `https://${process.env.CODESPACE_NAME}-8000.app.github.dev`;
-  }
-  return `http://localhost:${PORT}`;
-};
-
 // Health check endpoint with API URL info
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
     apiUrl: getApiUrl(),
-    environment: process.env.CODESPACE_NAME ? 'codespaces' : 'local'
+    environment: getEnvironment()
   });
 });
 
@@ -61,8 +54,11 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`OctoFit Tracker API running on port ${PORT}`);
-  console.log(`API URL: ${getApiUrl()}`);
-  console.log(`Health check: ${getApiUrl()}/api/health`);
+app.listen(serverConfig.port, serverConfig.host, () => {
+  console.log(`\n🚀 OctoFit Tracker API`);
+  console.log(`   Environment: ${serverConfig.environment}`);
+  console.log(`   Port: ${serverConfig.port}`);
+  console.log(`   Host: ${serverConfig.host}`);
+  console.log(`   API URL: ${getApiUrl()}`);
+  console.log(`   Health Check: ${getApiUrl()}/api/health\n`);
 });

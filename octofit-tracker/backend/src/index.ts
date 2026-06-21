@@ -8,7 +8,7 @@ import workoutsRouter from './routes/workouts';
 
 const app = express();
 const PORT = 8000;
-const MONGODB_URI = 'mongodb://localhost:27017/octofit-tracker';
+const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
 
 // Middleware
 app.use(express.json());

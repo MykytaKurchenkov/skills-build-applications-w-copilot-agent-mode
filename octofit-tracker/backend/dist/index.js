@@ -12,7 +12,7 @@ const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
 const workouts_1 = __importDefault(require("./routes/workouts"));
 const app = (0, express_1.default)();
 const PORT = 8000;
-const MONGODB_URI = 'mongodb://localhost:27017/octofit-tracker';
+const MONGODB_URI = 'mongodb://localhost:27017/octofit_db';
 // Middleware
 app.use(express_1.default.json());
 // CORS headers for Codespaces and local development
